@@ -3,14 +3,14 @@ name: Build EXE and macOS App
 on:
   push:
     branches:
-      - main  # 每次 push 到 main 分支时触发
+      - main  # 每次 push 到 main 分支時觸發
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]  # 在不同系统上打包
+        os: [ubuntu-latest, windows-latest, macos-latest]  # 在不同系統上打包
 
     steps:
       - name: Checkout repository
@@ -24,27 +24,29 @@ jobs:
       - name: Install dependencies
         run: pip install pyinstaller
 
+      # 🔹 Windows 版本
       - name: Build Windows EXE
         if: matrix.os == 'windows-latest'
-        run: pyinstaller --onefile store_stock_checker.py
+        run: pyinstaller --onefile --name store_stock_checker store_stock_checker.py
 
-      - name: Build macOS App
-        if: matrix.os == 'macos-latest'
-        run: pyinstaller --onefile --windowed store_stock_checker.py
-
-      - name: Upload EXE
+      - name: Upload Windows EXE
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: update-windows
+          name: store_stock_checker-windows
           path: dist/store_stock_checker.exe
+
+      # 🔹 macOS 版本
+      - name: Build macOS App
+        if: matrix.os == 'macos-latest'
+        run: pyinstaller --onefile --windowed --name store_stock_checker store_stock_checker.py
+
+      - name: Debug: List dist directory
+        run: ls -R dist
 
       - name: Upload macOS App
         if: matrix.os == 'macos-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: update-macos
-          path: dist/update-macos
-
-      - name: Debug: List dist directory
-        run: ls -R dist
+          name: store_stock_checker-macos
+          path: dist/store_stock_checker
