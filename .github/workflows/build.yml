@@ -45,3 +45,6 @@ jobs:
         with:
           name: update-macos
           path: dist/update-macos
+
+      - name: Debug: List dist directory
+        run: ls -R dist
