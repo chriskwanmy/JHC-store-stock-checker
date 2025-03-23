@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]  # 在不同系統上打包
+        os: [windows-latest, macos-latest]  # 只構建 Windows 和 macOS 版本
 
     steps:
       - name: Checkout repository
@@ -22,28 +22,31 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install pyinstaller
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
 
       # 🔹 Windows 版本
       - name: Build Windows EXE
         if: matrix.os == 'windows-latest'
-        run: pyinstaller --onefile --name store_stock_checker store_stock_checker.py
+        run: pyinstaller --onefile --name StoreStockChecker store_stock_checker.py
 
       - name: Upload Windows EXE
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: store_stock_checker-windows
-          path: dist/store_stock_checker.exe
+          name: StoreStockChecker-windows
+          path: dist/StoreStockChecker.exe
 
       # 🔹 macOS 版本
       - name: Build macOS App
         if: matrix.os == 'macos-latest'
-        run: pyinstaller --onefile --windowed --name store_stock_checker store_stock_checker.py
+        run: pyinstaller --onefile --windowed --name StoreStockChecker store_stock_checker.py
 
       - name: Upload macOS App
         if: matrix.os == 'macos-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: store_stock_checker-macos
-          path: dist/store_stock_checker
+          name: StoreStockChecker-macos
+          path: dist/StoreStockChecker
