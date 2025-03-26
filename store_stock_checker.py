@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import re
 import json
 import time
-
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 # Disable SSL warnings
 requests.packages.urllib3.disable_warnings()
 
